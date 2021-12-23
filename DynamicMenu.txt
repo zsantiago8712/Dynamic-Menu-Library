@@ -1,0 +1,48 @@
+###### DYNAMIC MENU #####
+
+
+
+
+
+TODO LIST DAILY
+
+20/12/2021 -- CHECAR TODO LO QUE HARA LA LIBRERIA [  ] 
+
+
+
+--------------------------------------------------------------------------
+
+// UNA COLUMNA - NUMERADO			// UNA COLUMNA POR MOVIMIENTO    // DOS COLUMNAS -- NUMERADO
+|--------------------|            |---------------------|			 |-----------------------------------------|
+|	   * MENU *		 |			  |       * MENU *      |			 |                 * MENU *                |	
+|--------------------|            |---------------------|			 |-----------------------------------------|
+| 1) JUGAR			 |			  |	[  ] JUGAR		    |            | 1) JUGAR           | 2) CONFIGURACIONES |
+|					 |			  |						|			 | 2) JUGAR2          | 3) SALIR           |
+| 2) CONFIGURACIONES |			  | [  ] CONFIGURACIONES|            |-----------------------------------------|
+| 3) SALIR			 |			  |	[  ] SALIR			|            
+|--------------------|            |---------------------|
+
+
+// DOS COLUMNAS -- NUMERADO                          // DOS COLUMNAS -- MOVIMIENTO
+															 
+|-------------------------------------------|        |-----------------------------------------------|
+|					* MENU *                |        |					  * MENU *                   |
+|-------------------------------------------|        |-----------------------------------------------| 
+| 1. ALQUILAR AUTO     | 5. GANANCIA        |        | [  ] ALQUILAR AUTO     | [  ] GANANCIA        |
+| 2. AUTOS DISPONIBLES | 6. CONFIGURACIONES |        | [  ] AUTOS DISPONIBLES | [  ] CONFIGURACIONES |
+| 3. VERIFICAR RES     | 7. SALIR           |        | [  ] VERIFICAR RES     |                      |
+| 4. MODIFICAR RES     |                    |        | [  ] MODIFICAR RES     |                      |
+|-------------------------------------------|        |-----------------------------------------------|
+
+
+
+// SE PODRA CAMBIAR EL DISEÑO DEL BORDE 
+// TIPO DE MENU --- {UNA COLMNA - NUMERADO / MOVIMIENTO} -- {DOS COLUMNAS - NUMERADO / MOVIMIENTO}
+// SI LLEVA HEADER (TITULO) 
+// DISEÑO DE SEPARADOR NUMERADOR ( 1. / 1) )  O EL DEL MOVIMIENTO ( [  ], {  } )
+
+
+|-------------------------------|
+|            * MENU *           |
+
+
