@@ -35,6 +35,25 @@ TODO LIST DAILY
 |-------------------------------------------|        |-----------------------------------------------|
 
 
+╔═════════════════════════════════════╗
+║              * MENU *               ║
+║═════════════════════════════════════║
+║ [██] JUGAR   ║ [  ] CONFIGURACIONES ║
+║ [  ] JUAGAR2 ║ [  ] SALIR           ║
+╚═════════════════════════════════════╝
+
+╔═════════════════════════════════════╗
+║            * MENU *                 ║
+║═════════════════════════════════════║
+║ 1. JUGAR       ║ 3. CONFIGURACIONES ║
+║ 2. JUAGAR2     ║ 4. SALIR           ║
+╚═════════════════════════════════════╝
+
+╔═════════════════════════════════════════════════════╗
+║ [██] * BIENVENIDO A ABMODEL. * ║ [  ] VERIFICAR RES ║
+║ [  ] ALQUILAR AUTO             ║ [  ] MODIFICAR RES ║
+║ [  ] AUTOS DISPONIBLES         ║                    ║
+╚═════════════════════════════════════════════════════╝
 
 // SE PODRA CAMBIAR EL DISEÑO DEL BORDE 
 // TIPO DE MENU --- {UNA COLMNA - NUMERADO / MOVIMIENTO} -- {DOS COLUMNAS - NUMERADO / MOVIMIENTO}

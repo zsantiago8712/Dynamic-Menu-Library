@@ -1,7 +1,13 @@
 #include "../libs/DynamicMenu.h"
+#include <math.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <wchar.h>
 
 
 
+static uint8_t getBiggestString(const char** array, const uint8_t start, const uint8_t end);
 static void printOptionsOneRow(DynamicMenu menu);
 static void getNumMoveStyle(uint8_t index, NumMovStyle style, uint8_t isSelected);
 static void printHeader(DynamicMenu menu, const uint8_t positionHeader);
@@ -12,7 +18,7 @@ static void printTopOrEnd(DynamicMenu menu, uint16_t isTop);
 static void getBorderStyle(StyleBorder border, wchar_t borderStyle[4], Position position);
 static void pustSpaces(uint8_t sizeWord, uint8_t sizeMenu);
 static void getSizeOfMenu(DynamicMenu menu);
-
+static void printOptionsDoubleRow(DynamicMenu menu);
 #define RED "\x1B[31m"
 
 #define PRINT_MEM_ERROR fprintf(stderr,"ERROR: %s %d MEMEORY ERROR", __FILE__, __LINE__);
@@ -37,7 +43,7 @@ struct _DynamicMenu{
 
 	char** menuOptions;
 	uint_fast8_t numMenuOptions;
-	uint_fast8_t menuSize; 
+	uint_fast16_t menuSize; 
 };
 
 
@@ -149,7 +155,12 @@ void printMenu(DynamicMenu menu, const uint8_t positionHeader){
 		printHeader(menu, positionHeader);
 		printTopOrEnd(menu, MIDDLE);
 	}
-	printOptionsOneRow(menu);
+
+	if(menu->typeMenu == ONE_ROW || menu->typeMenu == ONE_ROW_MOV)
+		printOptionsOneRow(menu);
+	else if(menu->typeMenu == DOUBLE_ROW || menu->typeMenu == DOUBLE_ROW_MOV)
+		printOptionsDoubleRow(menu);
+
 	printTopOrEnd(menu, UNDER);
 }
 
@@ -179,7 +190,7 @@ static void printHeader(DynamicMenu menu, const uint8_t positionHeader){
 static void printOptionsOneRow(DynamicMenu menu){
 
 	wchar_t border[4];
-	uint8_t extraSpaces;
+	uint8_t extraSpaces = 0;
 	uint8_t indexNum = 0;
 
 	if(!menu->hiderAttr)
@@ -209,6 +220,65 @@ static void printOptionsOneRow(DynamicMenu menu){
 			
 	}
 	wprintf(L"%lc\n", border[0]);
+
+}
+
+
+static void printOptionsDoubleRow(DynamicMenu menu){
+	
+	wchar_t border[4];
+	uint8_t extraSpaces = 0;
+	uint8_t indexNum = 0;
+	uint_fast16_t separetor = getBiggestString((const char**) menu->menuOptions, (uint8_t)ceilf((float)menu->numMenuOptions  / 2) , menu->numMenuOptions);
+	uint8_t indexRightRow = ceilf((float) menu->numMenuOptions / 2);
+	
+
+	getBorderStyle(menu->styleBorder, border, MIDDLE);
+	if(!menu->hiderAttr)
+		indexNum = 1;
+
+
+	wprintf(L"%lc", border[0]);
+	if(menu->typeMenu == DOUBLE_ROW_MOV){
+		
+		separetor += 7;
+		getNumMoveStyle(menu->hiderAttr, menu->numMovStyle, DM_TRUE);
+		extraSpaces = 6;
+	}else{
+		separetor += 5;
+		getNumMoveStyle(menu->hiderAttr + indexNum, menu->numMovStyle, DM_FALSE);
+		extraSpaces = 4;
+	}
+	
+		
+	printf("%s", menu->menuOptions[menu->hiderAttr]);
+	pustSpaces(strlen(menu->menuOptions[menu->hiderAttr]) + extraSpaces, menu->menuSize - separetor);
+	wprintf(L"%lc", border[0]);
+	getNumMoveStyle(indexRightRow + indexNum, menu->numMovStyle, DM_FALSE);
+	printf("%s", menu->menuOptions[indexRightRow]);
+	pustSpaces(strlen(menu->menuOptions[indexRightRow]) + extraSpaces, separetor + 1);
+	wprintf(L"%lc\n", border[0]);
+	indexRightRow++;
+
+	for(uint8_t i = menu->hiderAttr + 1; i < (uint8_t)ceil((float)menu->numMenuOptions / 2); i++){
+		
+		wprintf(L"%lc", border[0]);
+		getNumMoveStyle(i + indexNum, menu->numMovStyle, DM_FALSE);
+		printf("%s", menu->menuOptions[i]);
+		pustSpaces(strlen(menu->menuOptions[i]) + extraSpaces, menu->menuSize - separetor);
+		wprintf(L"%lc", border[0]);
+
+		if(indexRightRow < menu->numMenuOptions){
+			
+			getNumMoveStyle(indexRightRow + indexNum, menu->numMovStyle, DM_FALSE);
+			printf("%s", menu->menuOptions[indexRightRow]);
+			pustSpaces(strlen(menu->menuOptions[indexRightRow]) + extraSpaces, separetor + 1);
+			indexRightRow++;
+		}else 
+			pustSpaces(0, separetor + 1);
+			
+		wprintf(L"%lc\n", border[0]);
+	}
 
 }
 
@@ -247,11 +317,11 @@ static void getSizeOfMenu(DynamicMenu menu){
 	uint_fast8_t rigthRow = 0;
 	uint_fast8_t leftRow = 0;
 	uint8_t max = menu->numMenuOptions - 1;
-	uint_fast8_t start = 0;
+	const uint_fast8_t start = 0;
+
 
 	if(menu->typeMenu == DOUBLE_ROW || menu->typeMenu == DOUBLE_ROW_MOV){
 
-		start = 1;
 		max = ceil((float)menu->numMenuOptions / 2) + 1;
 		rigthRow = strlen(menu->menuOptions[max]);
 		for(uint8_t i = max; i <= menu->numMenuOptions - 1; i++){
@@ -260,19 +330,21 @@ static void getSizeOfMenu(DynamicMenu menu){
 				rigthRow = strlen(menu->menuOptions[i]);
 			
 		}
-		rigthRow += 6;
+		rigthRow += 17;
 	}
 	
 
 	leftRow = strlen(menu->menuOptions[start]);
-	for(uint8_t i = start; i < max; i++){
+	for(uint8_t i = start + 1; i < max; i++){
 			
-			if(leftRow < strlen(menu->menuOptions[i]))
-				leftRow = strlen(menu->menuOptions[i]);
+		if(leftRow < strlen(menu->menuOptions[i]))
+			leftRow = strlen(menu->menuOptions[i]);
 	}
 
-	if(menu->typeMenu == ONE_ROW_MOV || menu->typeMenu == DOUBLE_ROW_MOV)
-		menu->menuSize = rigthRow + leftRow + 12;
+	if(menu->typeMenu == ONE_ROW_MOV)
+		menu->menuSize = rigthRow + leftRow + 7;
+	else if(menu->typeMenu == DOUBLE_ROW_MOV)
+		menu->menuSize = rigthRow + leftRow + 7;
 	else
 		menu->menuSize = rigthRow + leftRow + 5;
 }
@@ -330,7 +402,6 @@ static void printTopOrEnd(DynamicMenu menu, uint16_t isTop){
 
 
 
-
 static char** createStringArray(char** array, const uint_fast16_t size){
 
 	array = calloc(size, sizeof(char*));
@@ -358,4 +429,18 @@ static char* freeString(char* string){
 	string = NULL;
 
 	return string;
+}
+
+
+static uint8_t getBiggestString(const char** array, const uint8_t start, const uint8_t end){
+
+	uint8_t max = strlen(array[start]);
+
+	for(uint8_t i = start; i < end; i++){
+
+		if(max < strlen(array[i]))
+			max = strlen(array[i]);
+	}
+
+	return max;
 }
